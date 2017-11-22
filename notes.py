@@ -33,6 +33,13 @@ class Note:
     def setDateNow(self):
         self.date = datetime.datetime.now().strftime("%d-%m-%y")
 
+    #return date; if not set use today
+    def getDate(self):
+        if self.date == "":
+            self.setDateNow()
+        return self.date
+
+
     def createName(self):
 
         tmp = ""
@@ -50,6 +57,10 @@ class Note:
 
         #suffix
         tmp += ".md"
+
+        #add this to as my name
+        self.setName(tmp)
+
         return tmp
 
     def hash(self):
@@ -75,7 +86,7 @@ class Note:
         msg += "--------------------------------------------------\n"
 
         # body
-        msg += "\n"
+        #msg += "\n"
         msg += "{}\n".format( self.body )
 
 

@@ -127,9 +127,78 @@ def readTodoFile(fname):
     return nbtmp
 
 
+# compare two notebooks and deduce if they differ.
+def compareNoteBooks(nb1, nb2):
+    modified = []
+    added    = []
+    removed  = []
+
+
+    # if note in nb2 is not found in nb1 with same name
+    # then it is new
+    for note in nb2.notes:
+        h = note.hash()
+
+        for ref_note in nb1.notes:
+            ref_h = ref_note.hash()
+            if (note.title == ref_note.title):
+                break
+        else:
+            print("note {} is added".format(note.title))
+            added.append(note)
+
+
+
+    # if note in nb2 is not found in nb1 with same hash
+    # but is found with a same name then it is modified
+    for note in nb2.notes:
+        h = note.hash()
+
+        for ref_note in nb1.notes:
+            ref_h = ref_note.hash()
+
+            if (h == ref_h): #and (note.title == ref_note.title):
+                break
+        else:
+            for ref_note in nb1.notes:
+                ref_h = ref_note.hash()
+                if (note.title == ref_note.title):
+                    print("note {} is modified".format(note.title))
+                    modified.append(note)
+                    break
+
+
+    #if note is not found nb1 with same name
+    #union = []
+    #for n in nb1.notes:
+    #    union.append(n)
+    #for n in modified:
+    #    union.append(n)
+
+
+
+    # if note in nb1 is not found in nb2
+    # then it has been removed
+    for note in nb1.notes:
+        h = note.hash()
+
+        for ref_note in nb2.notes:
+            ref_h = ref_note.hash()
+
+            if (note.title == ref_note.title):
+                break
+        else:
+            print("note {} is removed".format(note.title))
+            removed.append(note)
+
+    return added, modified, removed
+
+
+
 #--------------------------------------------------
 #read directory
 directory = "todos"
+done_directory = "todos/done"
 
 
 #create notebook from notes in todo directory
@@ -139,17 +208,35 @@ print("number of notes: {}".format(  len( nb.notes )))
 
 #open for read
 fname = nb.tmpNoteFile
-#XXX
-shell_util.openFile(fname)
+shell_util.openFile(fname) #XXX
 
 
 #create notebook from temporary file
 nbtmp = readTodoFile(fname)
-nbtmp.print() #XXX debug print
+#nbtmp.print() #XXX debug print
 
 print("number of notes: {}".format(  len( nbtmp.notes )))
 
 #compare notebooks
+added, modified, removed = compareNoteBooks(nb, nbtmp)
+
+# and now add accordinly
+
+for note in added:
+    note.save(directory)
+
+for note in modified:
+    note.save(directory)
+
+for note in removed:
+    note.save(done_directory)
+    #note.setName(note.createName())
+    print("note name before removal: {}".format(note.name))
+
+    prog = "rm {}/{}".format(directory, note.name)
+    print(prog)
+    shell_util.run(prog)
+
 
 
 #remove tmp file
