@@ -11,6 +11,13 @@ import shell_util
 
 #create todo notebook
 def createTODO(directory):
+
+    #get files
+    allFiles  = [f for f in listdir(directory) if isfile(join(directory, f))]
+    todoFiles = [f for f in allFiles if f[0] != "."]
+    print(todoFiles)
+
+    #create notebook
     nb = NoteBook()
     nb.setTitle("TODO")
 
@@ -23,16 +30,23 @@ def createTODO(directory):
 
 #read temporary notebook file
 def readTodoFile(fname):
-    nb = NoteBook()
-    nb.setTitle("Updated TODO")
+
+    nbtmp = NoteBook()
+    nbtmp.setTitle("Updated TODO")
+    nbtmp.tmpNoteFile = "notebook-tmp-C.md"
+
 
     f = open(fname, "r")
     tmp = f.read()
     f.close()
 
-    print("tmp file content--------------")
+    #print("tmp file content--------------")
     tmp = tmp.splitlines()
-    print(tmp)
+    #print(tmp)
+
+    #add trailing newlines for easier parsing
+    #for i in range(len(tmp)):
+    #    tmp[i] += "\n"
 
     #filter header out
     c = 0
@@ -44,32 +58,88 @@ def readTodoFile(fname):
         if mtitle:
             break
         c += 1
-    print("skipping {}".format(c))
+    #print("skipping {}".format(c))
 
 
+    ns     = []
+    hashes = []
+    bodys  = []
 
-    return nb
+    body   = ""
+    while (c < len(tmp)):
+        line = tmp[c]
+        #print("{}".format( line ))
+
+        mtitle = regexes.REtitle.match(line)
+        mhash = regexes.REhash.match(line)
+
+        if mtitle:
+            n = Note()
+            bodys.append(body)
+            body = ""
+
+            s = mtitle.group(1)
+            n.setTitle(s)
+            ns.append(n)
+            #ni += 1
+        elif mhash:
+            s = mhash.group(1)
+            hashes.append(s)
+        else:
+            body += line + "\n"
+        c += 1
+    bodys.append(body) #append last hanging body
+
+    #strip from trailing newline
+
+
+    #print("###########################################")
+    for i, n in enumerate(ns):
+
+        body = bodys[i+1]
+        #print("last char: vvv{}vvv".format(body[-2:]))
+
+        #if (body[-2:] == "\n"): 
+        #    print("newline detected")
+        #    body = body[:-2]
+
+        body = body[:-2] #strip trailing newline
+
+        n.setBody(body)
+        #print("{} -- {}".format(i, n.title))
+        #print("{} hash is {}".format(i, n.hash() ))
+        #print("----")
+        #print("{}".format(n.body)) 
+        #print("----")
+        #print("{}".format(body))
+
+        nbtmp.addNote(n)
+
+    return nbtmp
 
 
 #--------------------------------------------------
 #read directory
 directory = "todos"
-allFiles  = [f for f in listdir(directory) if isfile(join(directory, f))]
-todoFiles = [f for f in allFiles if f[0] != "."]
-print(todoFiles)
+
 
 #create notebook from notes in todo directory
 nb = createTODO(directory)
 nb.print()
+print("number of notes: {}".format(  len( nb.notes )))
 
 #open for read
 fname = nb.tmpNoteFile
-shell_util.createTempFile(fname)
+#XXX
+shell_util.openFile(fname)
 
 
 #create notebook from temporary file
 nbtmp = readTodoFile(fname)
+nbtmp.print() #XXX debug print
 
+print("number of notes: {}".format(  len( nbtmp.notes )))
 
 #remove tmp file
-shell_util.run("rm {}".format(fname))
+#XXX
+#shell_util.run("rm {}".format(fname))

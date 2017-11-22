@@ -12,6 +12,9 @@ REtitle = re.compile(r'^[#]{2}\s(.*)')
 #date
 REdate  = re.compile(r'\s*created:\s*(.*)')
 
+#hash
+REhash  = re.compile(r'\s*---:(.*)')
+
 
 
 

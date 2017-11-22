@@ -38,7 +38,7 @@ def run(string):
 
 
 
-def createTempFile(tmpf):
+def openFile(tmpf):
     prog = "{} {}".format(editor, tmpf)
     print(prog)
     

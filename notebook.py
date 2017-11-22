@@ -12,7 +12,10 @@ class NoteBook:
     previewLen = 80
 
     #name of the main temporary note file
-    tmpNoteFile = "note-tmp.md"
+    tmpNoteFile = "notebook-tmp.md"
+
+    def __init__(self):
+        self.notes = []
 
 
     #add a new note
@@ -38,18 +41,18 @@ class NoteBook:
             msg += "---:{}\n".format(note.hash())
 
             prewv = note.body
-            if len(prewv) > self.previewLen:
-                prewv = prewv[:140]
-                prewv += "  . . ."
+            #if len(prewv) > self.previewLen:
+            #    prewv = prewv[:140]
+            #    prewv += "  . . ."
 
-            msg += " {}\n".format(prewv)
+            msg += "{}\n".format(prewv)
             msg += "\n"
 
-        msg += "\n"
+        #msg += "\n"
 
         print(msg)
 
-        f = open(self.tmpNoteFile,'w')
+        f = open(self.tmpNoteFile, 'w')
         f.write(msg)
         f.close()
 

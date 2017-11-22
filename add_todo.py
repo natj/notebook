@@ -35,7 +35,7 @@ tododir = notesdir + "/todos"
 #################################3
 # open editor and modify tmp file
 full_path = "{}/tmp-todo.md".format(tododir)
-shell_util.createTempFile(full_path)
+shell_util.openFile(full_path)
 
 
 #create note from it
