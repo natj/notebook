@@ -12,9 +12,7 @@ def run(string):
 
     # shlex.split will preserve inner quotes
     prog = shlex.split(string)
-
-    print(prog[0])
-
+    #print(prog[0])
 
     if prog[0] == "vi":
         # vi hangs when piping stdout/stderr
@@ -22,7 +20,7 @@ def run(string):
         stdout, stderr = p0.communicate()
         rc = p0.returncode
     elif prog[0] in ["vim", "nvim"]:
-        print(prog)
+        #print(prog)
         p0 = subprocess.Popen(prog)
         stdout, stderr = p0.communicate()
         rc = p0.returncode
@@ -40,10 +38,10 @@ def run(string):
 
 def openFile(tmpf):
     prog = "{} {}".format(editor, tmpf)
-    print(prog)
+    #print(prog)
     
     stdout, stderr, rc = run(prog)
-    print("exiting prog")
+    #print("exiting prog")
 
 
 

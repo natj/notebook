@@ -15,7 +15,7 @@ def createTODO(directory):
     #get files
     allFiles  = [f for f in listdir(directory) if isfile(join(directory, f))]
     todoFiles = [f for f in allFiles if f[0] != "."]
-    print(todoFiles)
+    #print(todoFiles)
 
     #create notebook
     nb = NoteBook()
@@ -215,12 +215,12 @@ shell_util.openFile(fname) #XXX
 nbtmp = readTodoFile(fname)
 #nbtmp.print() #XXX debug print
 
-print("number of notes: {}".format(  len( nbtmp.notes )))
+print("number of notes after: {}".format(  len( nbtmp.notes )))
 
 #compare notebooks
 added, modified, removed = compareNoteBooks(nb, nbtmp)
 
-# and now add accordinly
+# and now add accordingly
 
 for note in added:
     note.save(directory)
@@ -229,14 +229,13 @@ for note in modified:
     note.save(directory)
 
 for note in removed:
+    note.body += "\n ===DONE==="
     note.save(done_directory)
-    #note.setName(note.createName())
-    print("note name before removal: {}".format(note.name))
 
+    #print("note name before removal: {}".format(note.name))
     prog = "rm {}/{}".format(directory, note.name)
-    print(prog)
+    #print(prog)
     shell_util.run(prog)
-
 
 
 #remove tmp file
