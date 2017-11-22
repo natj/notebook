@@ -22,6 +22,9 @@ class Note:
         self.title = title
 
     def setBody(self, body):
+        body = body.rstrip()
+        body += "\n"
+
         self.body = body
 
     def setDate(self, date):
@@ -51,7 +54,10 @@ class Note:
 
     def hash(self):
         m = hashlib.md5()
+
+        m.update(self.title.encode('utf-8'))
         m.update(self.body.encode('utf-8'))
+
         return m.hexdigest()
 
     #create and save to file
@@ -64,7 +70,8 @@ class Note:
         #msg += "\n"
         msg += "## {}\n".format(self.title)
         if not(self.date == ""):
-            msg += " created: {}\n".format(self.date)
+            msg += "  created: {}\n".format(self.date)
+            msg += " modified: {}\n".format(self.date)
         msg += "--------------------------------------------------\n"
 
         # body

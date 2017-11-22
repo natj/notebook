@@ -71,7 +71,9 @@ def readTodoFile(fname):
         #print("{}".format( line ))
 
         mtitle = regexes.REtitle.match(line)
-        mhash = regexes.REhash.match(line)
+        mhash  = regexes.REhash.match(line)
+        mdate  = regexes.REdate.match(line)
+        mmdate = regexes.REmdate.match(line)
 
         if mtitle:
             n = Note()
@@ -85,6 +87,10 @@ def readTodoFile(fname):
         elif mhash:
             s = mhash.group(1)
             hashes.append(s)
+        elif mdate:
+            n.setDate(mdate.group(1))
+        elif mmdate:
+            n.setDate(mmdate.group(1))
         else:
             body += line + "\n"
         c += 1
@@ -103,7 +109,10 @@ def readTodoFile(fname):
         #    print("newline detected")
         #    body = body[:-2]
 
-        body = body[:-2] #strip trailing newline
+        #body = body[:-2] #strip trailing newline
+        #body = body.rstrip()
+        #body += "\n"
+        #body += "\n"
 
         n.setBody(body)
         #print("{} -- {}".format(i, n.title))
@@ -139,6 +148,9 @@ nbtmp = readTodoFile(fname)
 nbtmp.print() #XXX debug print
 
 print("number of notes: {}".format(  len( nbtmp.notes )))
+
+#compare notebooks
+
 
 #remove tmp file
 #XXX

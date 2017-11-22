@@ -38,9 +38,11 @@ class NoteBook:
         #loop over all notes and collect text
         for note in self.notes:
             msg += "## {}\n".format(note.title) 
+            msg += "  created: {}\n".format(note.date)
+            msg += " modified: {}\n".format(note.date)
             msg += "---:{}\n".format(note.hash())
 
-            prewv = note.body
+            prewv = note.body.rstrip()
             #if len(prewv) > self.previewLen:
             #    prewv = prewv[:140]
             #    prewv += "  . . ."
@@ -50,7 +52,9 @@ class NoteBook:
 
         #msg += "\n"
 
-        print(msg)
+
+        msg = msg.rstrip() #remove all trailing newlines
+        #print(msg)
 
         f = open(self.tmpNoteFile, 'w')
         f.write(msg)
