@@ -1,2 +1,2 @@
-cd $NOTEBOOKDIR
-python3 todos.py
+cd $NOTESDIR
+python3 $NOTEBOOKDIR/todos.py

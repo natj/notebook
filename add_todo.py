@@ -25,7 +25,7 @@ def readSimpleNote(fname):
 
 
 
-try: notesdir = os.environ["NOTEBOOKDIR"]
+try: notesdir = os.environ["NOTES"]
 except: notesdir = "."
 
 tododir = notesdir + "/todos"

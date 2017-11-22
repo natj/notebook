@@ -32,15 +32,20 @@ opens list of todos in editor
 
 ## Installation
 
-define environment variable `$NOTEBOOKDIR` to point to directory where 
-notes are to be save.
+Define environment variable `$NOTEBOOKDIR` to point to directory where 
+this repository is. Similarly `$NOTES` should be the location where
+the notes are to be saved and archived.
 
 
 In addition, it is good idea to add aliases to your `.bash_profile` for 
 `todo` and `todos` as:
 ```
 export NOTEBOOKDIR=/Users/natj/projects/notebook
+export NOTESDIR=/Users/natj/Documents/notes
 alias todo='/Users/natj/projects/notebook/todo.sh'
 alias todos='/Users/natj/projects/notebook/todos.sh'
 
 ```
+
+
+
