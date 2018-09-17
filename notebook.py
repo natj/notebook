@@ -37,6 +37,7 @@ class NoteBook:
 
         #loop over all notes and collect text
         for note in self.notes:
+            msg += "--------------------------------------------------------------\n"
             msg += "## {}\n".format(note.title) 
             msg += "  created: {}\n".format(note.date)
             msg += " modified: {}\n".format(note.date)

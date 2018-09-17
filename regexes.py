@@ -16,6 +16,8 @@ REmdate = re.compile(r'\s*modified:\s*(.*)')
 #hash
 REhash  = re.compile(r'\s*---:(.*)')
 
+#beautifying note division line (for skipping)
+REdiv  = re.compile(r'^[-]{62}')
 
 
 

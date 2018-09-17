@@ -74,6 +74,8 @@ def readTodoFile(fname):
         mhash  = regexes.REhash.match(line)
         mdate  = regexes.REdate.match(line)
         mmdate = regexes.REmdate.match(line)
+        mdiv   = regexes.REdiv.match(line)
+
 
         if mtitle:
             n = Note()
@@ -81,9 +83,13 @@ def readTodoFile(fname):
             body = ""
 
             s = mtitle.group(1)
+            s = s.replace("'","") #strip ' from title (causes problems with rm)
             n.setTitle(s)
             ns.append(n)
             #ni += 1
+        elif mdiv:
+            #do nothing
+            True
         elif mhash:
             s = mhash.group(1)
             hashes.append(s)
@@ -144,7 +150,7 @@ def compareNoteBooks(nb1, nb2):
             if (note.title == ref_note.title):
                 break
         else:
-            print("note {} is added".format(note.title))
+            print("   note \"{}\" is added".format(note.title))
             added.append(note)
 
 
@@ -163,7 +169,7 @@ def compareNoteBooks(nb1, nb2):
             for ref_note in nb1.notes:
                 ref_h = ref_note.hash()
                 if (note.title == ref_note.title):
-                    print("note {} is modified".format(note.title))
+                    print("   note \"{}\" is modified".format(note.title))
                     modified.append(note)
                     break
 
@@ -188,56 +194,60 @@ def compareNoteBooks(nb1, nb2):
             if (note.title == ref_note.title):
                 break
         else:
-            print("note {} is removed".format(note.title))
+            print("   note \"{}\" is removed".format(note.title))
             removed.append(note)
 
     return added, modified, removed
 
 
 
+
 #--------------------------------------------------
-#read directory
-directory = "todos"
-done_directory = "todos/done"
+# main loop
+if __name__ == "__main__":
 
-
-#create notebook from notes in todo directory
-nb = createTODO(directory)
-nb.print()
-print("number of notes: {}".format(  len( nb.notes )))
-
-#open for read
-fname = nb.tmpNoteFile
-shell_util.openFile(fname) #XXX
-
-
-#create notebook from temporary file
-nbtmp = readTodoFile(fname)
-#nbtmp.print() #XXX debug print
-
-print("number of notes after: {}".format(  len( nbtmp.notes )))
-
-#compare notebooks
-added, modified, removed = compareNoteBooks(nb, nbtmp)
-
-# and now add accordingly
-
-for note in added:
-    note.save(directory)
-
-for note in modified:
-    note.save(directory)
-
-for note in removed:
-    note.body += "\n ===DONE==="
-    note.save(done_directory)
-
-    #print("note name before removal: {}".format(note.name))
-    prog = "rm {}/{}".format(directory, note.name)
-    #print(prog)
-    shell_util.run(prog)
-
-
-#remove tmp file
-#XXX
-#shell_util.run("rm {}".format(fname))
+    #read directory
+    directory = "todos"
+    done_directory = "todos/done"
+    
+    
+    #create notebook from notes in todo directory
+    nb = createTODO(directory)
+    nb.print()
+    print("number of notes before: {}".format(  len( nb.notes )))
+    
+    #open for read
+    fname = nb.tmpNoteFile
+    shell_util.openFile(fname) #XXX
+    
+    
+    #create notebook from temporary file
+    nbtmp = readTodoFile(fname)
+    #nbtmp.print() #XXX debug print
+    
+    print("number of notes after:  {}".format(  len( nbtmp.notes )))
+    
+    #compare notebooks
+    added, modified, removed = compareNoteBooks(nb, nbtmp)
+    
+    # and now add accordingly
+    
+    for note in added:
+        note.save(directory)
+    
+    for note in modified:
+        note.save(directory)
+    
+    for note in removed:
+        note.body += "\n ===DONE==="
+        note.save(done_directory)
+    
+        #print("note name before removal: {}".format(note.name))
+        prog = "rm {}/{}".format(directory, note.name)
+        #print(prog)
+        shell_util.run(prog)
+    
+    
+    #remove tmp file
+    #XXX
+    #shell_util.run("rm {}".format(fname))
