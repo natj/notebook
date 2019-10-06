@@ -1,9 +1,6 @@
 from notes import Note
 
 
-
-
-
 class NoteBook:
 
     notes = []
@@ -31,16 +28,15 @@ class NoteBook:
 
         msg = ""
         msg += "# {}\n".format(self.title)
-        msg += "-----\n"
+        msg += "---------\n"
         msg += "\n"
-
 
         #loop over all notes and collect text
         for note in self.notes:
             msg += "--------------------------------------------------------------\n"
             msg += "## {}\n".format(note.title) 
-            msg += "  created: {}\n".format(note.date)
-            msg += " modified: {}\n".format(note.date)
+            #msg += "  created: {}\n".format(note.date)
+            #msg += " modified: {}\n".format(note.date)
             msg += "---:{}\n".format(note.hash())
 
             prewv = note.body.rstrip()
@@ -98,10 +94,6 @@ if __name__ == "__main__":
     #    nb.addNote(note)
     #
     #nb.print()
-
-
-
-
 
 
 
