@@ -46,7 +46,11 @@ class Note:
 
         #if empty name, then create form title
         if self.name == "":
+
+            #TODO detect all illegal characters
             tmp = self.title.replace(' ', '-').lower()
+            tmp = tmp.replace('/', '').lower()
+
         #else lets use the name slot
         else:
             tmp = self.name

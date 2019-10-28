@@ -8,7 +8,6 @@ from notebook import NoteBook
 import shell_util
 
 
-
 #create todo notebook
 def createTODO(directory):
 
