@@ -9,20 +9,20 @@ from notebook import NoteBook
 import shell_util
 
 
-#create todo notebook
+# create todo notebook
 def createTODO(directory):
 
-    #get files
-    allFiles  = [f for f in listdir(directory) if isfile(join(directory, f))]
+    # get files
+    allFiles = [f for f in listdir(directory) if isfile(join(directory, f))]
     todoFiles = [f for f in allFiles if f[0] != "."]
-    #print(todoFiles)
+    # print(todoFiles)
 
-    #create notebook
+    # create notebook
     nb = NoteBook()
     nb.setTitle("TODO")
 
-    #nb.inbox.print(msg)
-    #nb.tasklist.print(msg)
+    # nb.inbox.print(msg)
+    # nb.tasklist.print(msg)
 
     for todof in todoFiles:
         n = readNoteFile(directory + "/" + todof)
@@ -31,57 +31,54 @@ def createTODO(directory):
     return nb
 
 
-#read temporary notebook file
+# read temporary notebook file
 def readTodoFile(fname):
 
     nbtmp = NoteBook()
     nbtmp.setTitle("Updated TODO")
     nbtmp.tmpNoteFile = "notebook-tmp-C.md"
 
-
     f = open(fname, "r")
     tmp = f.read()
     f.close()
 
-    #print("tmp file content--------------")
+    # print("tmp file content--------------")
     tmp = tmp.splitlines()
-    #print(tmp)
+    # print(tmp)
 
-    #add trailing newlines for easier parsing
-    #for i in range(len(tmp)):
+    # add trailing newlines for easier parsing
+    # for i in range(len(tmp)):
     #    tmp[i] += "\n"
 
-    #filter header out
+    # filter header out
     c = 0
     while True:
         if c >= len(tmp):
             break
 
         line = tmp[c]
-        #print("skipping {}".format(line))
+        # print("skipping {}".format(line))
 
         mtitle = regexes.REtitle.match(line)
         if mtitle:
             break
         c += 1
-    #print("skipping {}".format(c))
+    # print("skipping {}".format(c))
 
-
-    ns     = []
+    ns = []
     hashes = []
-    bodys  = []
+    bodys = []
 
-    body   = ""
-    while (c < len(tmp)):
+    body = ""
+    while c < len(tmp):
         line = tmp[c]
-        #print("{}".format( line ))
+        # print("{}".format( line ))
 
         mtitle = regexes.REtitle.match(line)
-        mhash  = regexes.REhash.match(line)
-        mdate  = regexes.REdate.match(line)
+        mhash = regexes.REhash.match(line)
+        mdate = regexes.REdate.match(line)
         mmdate = regexes.REmdate.match(line)
-        mdiv   = regexes.REdiv.match(line)
-
+        mdiv = regexes.REdiv.match(line)
 
         if mtitle:
             n = Note()
@@ -89,12 +86,12 @@ def readTodoFile(fname):
             body = ""
 
             s = mtitle.group(1)
-            s = s.replace("'","") #strip ' from title (causes problems with rm)
+            s = s.replace("'", "")  # strip ' from title (causes problems with rm)
             n.setTitle(s)
             ns.append(n)
-            #ni += 1
+            # ni += 1
         elif mdiv:
-            #do nothing
+            # do nothing
             True
         elif mhash:
             s = mhash.group(1)
@@ -106,31 +103,30 @@ def readTodoFile(fname):
         else:
             body += line + "\n"
         c += 1
-    bodys.append(body) #append last hanging body
+    bodys.append(body)  # append last hanging body
 
-
-    #print("###########################################")
+    # print("###########################################")
     for i, n in enumerate(ns):
 
-        body = bodys[i+1]
-        #print("last char: vvv{}vvv".format(body[-2:]))
+        body = bodys[i + 1]
+        # print("last char: vvv{}vvv".format(body[-2:]))
 
-        #if (body[-2:] == "\n"): 
+        # if (body[-2:] == "\n"):
         #    print("newline detected")
         #    body = body[:-2]
 
-        #body = body[:-2] #strip trailing newline
-        #body = body.rstrip()
-        #body += "\n"
-        #body += "\n"
+        # body = body[:-2] #strip trailing newline
+        # body = body.rstrip()
+        # body += "\n"
+        # body += "\n"
 
         n.setBody(body)
-        #print("{} -- {}".format(i, n.title))
-        #print("{} hash is {}".format(i, n.hash() ))
-        #print("----")
-        #print("{}".format(n.body)) 
-        #print("----")
-        #print("{}".format(body))
+        # print("{} -- {}".format(i, n.title))
+        # print("{} hash is {}".format(i, n.hash() ))
+        # print("----")
+        # print("{}".format(n.body))
+        # print("----")
+        # print("{}".format(body))
 
         nbtmp.addNote(n)
 
@@ -140,9 +136,8 @@ def readTodoFile(fname):
 # compare two notebooks and deduce if they differ.
 def compareNoteBooks(nb1, nb2):
     modified = []
-    added    = []
-    removed  = []
-
+    added = []
+    removed = []
 
     # if note in nb2 is not found in nb1 with same name
     # then it is new
@@ -151,13 +146,11 @@ def compareNoteBooks(nb1, nb2):
 
         for ref_note in nb1.notes:
             ref_h = ref_note.hash()
-            if (note.title == ref_note.title):
+            if note.title == ref_note.title:
                 break
         else:
-            print("   note \"{}\" is added".format(note.title))
+            print('   note "{}" is added'.format(note.title))
             added.append(note)
-
-
 
     # if note in nb2 is not found in nb1 with same hash
     # but is found with a same name then it is modified
@@ -167,13 +160,13 @@ def compareNoteBooks(nb1, nb2):
         for ref_note in nb1.notes:
             ref_h = ref_note.hash()
 
-            if (h == ref_h): #and (note.title == ref_note.title):
+            if h == ref_h:  # and (note.title == ref_note.title):
                 break
         else:
             for ref_note in nb1.notes:
                 ref_h = ref_note.hash()
-                if (note.title == ref_note.title):
-                    print("   note \"{}\" is modified".format(note.title))
+                if note.title == ref_note.title:
+                    print('   note "{}" is modified'.format(note.title))
                     modified.append(note)
                     break
 
@@ -185,65 +178,61 @@ def compareNoteBooks(nb1, nb2):
         for ref_note in nb2.notes:
             ref_h = ref_note.hash()
 
-            if (note.title == ref_note.title):
+            if note.title == ref_note.title:
                 break
         else:
-            print("   note \"{}\" is removed".format(note.title))
+            print('   note "{}" is removed'.format(note.title))
             removed.append(note)
 
     return added, modified, removed
 
 
-
-#--------------------------------------------------
+# --------------------------------------------------
 # main loop
 if __name__ == "__main__":
 
-    #read directory
+    # read directory
     directory = "todos"
     done_directory = "todos/done"
-    
-    
-    #create notebook from notes in todo directory
+
+    # create notebook from notes in todo directory
     nb = createTODO(directory)
     nb.print()
-    print("number of notes before: {}".format(  len( nb.notes )))
-    
-    #open for read
+    print("number of notes before: {}".format(len(nb.notes)))
+
+    # open for read
     fname = nb.tmpNoteFile
-    shell_util.openFile(fname) #XXX
+    shell_util.openFile(fname)  # XXX
 
-    
-    #create notebook from temporary file
+    # create notebook from temporary file
     nbtmp = readTodoFile(fname)
-    #nbtmp.print() #XXX debug print
-    
-    print("number of notes after:  {}".format(  len( nbtmp.notes )))
+    # nbtmp.print() #XXX debug print
 
-    #always save inbox and tasklist
+    print("number of notes after:  {}".format(len(nbtmp.notes)))
+
+    # always save inbox and tasklist
     nbtmp.inbox.save(directory)
     nbtmp.tasklist.save(directory)
 
-    #compare notebooks
+    # compare notebooks
     added, modified, removed = compareNoteBooks(nb, nbtmp)
 
     # and now add accordingly
     for note in added:
         note.save(directory)
-    
+
     for note in modified:
         note.save(directory)
-    
+
     for note in removed:
         note.body += "\n ===DONE==="
         note.save(done_directory)
-    
-        #print("note name before removal: {}".format(note.name))
+
+        # print("note name before removal: {}".format(note.name))
         prog = "rm {}/{}".format(directory, note.name)
-        #print(prog)
+        # print(prog)
         shell_util.run(prog)
-    
-    
-    #remove tmp file
-    #XXX
-    #shell_util.run("rm {}".format(fname))
+
+    # remove tmp file
+    # XXX
+    # shell_util.run("rm {}".format(fname))

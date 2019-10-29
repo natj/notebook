@@ -1,18 +1,16 @@
 import hashlib
-import datetime 
+import datetime
 import regexes
-
 
 
 class Note:
 
-    name  = ""
+    name = ""
     title = ""
-    body  = ""
-    date  = ""
+    body = ""
+    date = ""
 
-
-    #def __init__(self):
+    # def __init__(self):
 
     def setName(self, name):
         self.name = name
@@ -32,36 +30,35 @@ class Note:
     def setDateNow(self):
         self.date = datetime.datetime.now().strftime("%d-%m-%y")
 
-    #return date; if not set use today
+    # return date; if not set use today
     def getDate(self):
         if self.date == "":
             self.setDateNow()
         return self.date
 
-
     def createName(self):
 
         tmp = ""
 
-        #if empty name, then create form title
+        # if empty name, then create form title
         if self.name == "":
 
-            #TODO detect all illegal characters
-            tmp = self.title.replace(' ', '-').lower()
-            tmp = tmp.replace('/', '').lower()
+            # TODO detect all illegal characters
+            tmp = self.title.replace(" ", "-").lower()
+            tmp = tmp.replace("/", "").lower()
 
-        #else lets use the name slot
+        # else lets use the name slot
         else:
             tmp = self.name
 
-        #append date if there is one set
-        if not( self.date == "" ):
+        # append date if there is one set
+        if not (self.date == ""):
             tmp += "_" + self.date
 
-        #suffix
+        # suffix
         tmp += ".md"
 
-        #add this to as my name
+        # add this to as my name
         self.setName(tmp)
 
         return tmp
@@ -69,47 +66,45 @@ class Note:
     def hash(self):
         m = hashlib.md5()
 
-        m.update(self.title.encode('utf-8'))
-        m.update(self.body.encode('utf-8'))
+        m.update(self.title.encode("utf-8"))
+        m.update(self.body.encode("utf-8"))
 
         return m.hexdigest()
 
-    #create and save to file
+    # create and save to file
     def save(self, directory):
         fname = directory + "/" + self.createName()
         msg = ""
 
-        #title header
-        #msg += "# {}\n".format(self.name)
-        #msg += "\n"
+        # title header
+        # msg += "# {}\n".format(self.name)
+        # msg += "\n"
         msg += "## {}\n".format(self.title)
-        if not(self.date == ""):
+        if not (self.date == ""):
             msg += "  created: {}\n".format(self.date)
             msg += " modified: {}\n".format(self.date)
         msg += "--------------------------------------------------\n"
 
         # body
-        #msg += "\n"
-        msg += "{}\n".format( self.body )
+        # msg += "\n"
+        msg += "{}\n".format(self.body)
 
-
-        #write to file
-        #print(msg)
-        f = open(fname,'w')
+        # write to file
+        # print(msg)
+        f = open(fname, "w")
         f.write(msg)
         f.close()
 
-
-    #print all content
+    # print all content
     def print(self, msg):
         msg += "--------------------------------------------------------------\n"
-        msg += "## {}\n".format(self.title) 
-        #msg += "  created: {}\n".format(self.date)
-        #msg += " modified: {}\n".format(self.date)
+        msg += "## {}\n".format(self.title)
+        # msg += "  created: {}\n".format(self.date)
+        # msg += " modified: {}\n".format(self.date)
         msg += "---:{}\n".format(self.hash())
 
         prewv = self.body.rstrip()
-        #if len(prewv) > self.previewLen:
+        # if len(prewv) > self.previewLen:
         #    prewv = prewv[:140]
         #    prewv += "  . . ."
 
@@ -119,20 +114,19 @@ class Note:
         return msg
 
 
-
 class Inbox(Note):
     title = "inbox"
-    name  = "inbox"
+    name = "inbox"
 
     def __init__(self, note):
         self.body = note.body
         self.date = note.date
 
-    #print all content
+    # print all content
     def print(self, msg):
         print("inbox: {} writing to msg".format(self.title))
         msg += "--------------------------------------------------------------\n"
-        msg += "## {}\n".format(self.title) 
+        msg += "## {}\n".format(self.title)
         prewv = self.body.rstrip()
         msg += "{}\n".format(prewv)
 
@@ -143,17 +137,17 @@ class Inbox(Note):
 
 class TaskList(Note):
     title = "tasklist"
-    name  = "tasklist"
+    name = "tasklist"
 
     def __init__(self, note):
         self.body = note.body
         self.date = note.date
 
-    #print all content
+    # print all content
     def print(self, msg):
         print("tasklist {} writing to msg".format(self.title))
         msg += "--------------------------------------------------------------\n"
-        msg += "## {}\n".format(self.title) 
+        msg += "## {}\n".format(self.title)
         prewv = self.body.rstrip()
         msg += "{}\n".format(prewv)
 
@@ -162,40 +156,36 @@ class TaskList(Note):
         return msg
 
 
-
 # read note from file and create an object
 def readNoteFile(fname):
     n = Note()
     f = open(fname, "r")
 
-    #read until message
+    # read until message
     for line in f:
         if regexes.REmsgb.match(line):
             break
 
         mname = regexes.REname.match(line)
         if mname:
-            n.setName( mname.group(1) )
+            n.setName(mname.group(1))
 
         mtitle = regexes.REtitle.match(line)
         if mtitle:
-            n.setTitle( mtitle.group(1) )
+            n.setTitle(mtitle.group(1))
 
         mdate = regexes.REdate.match(line)
         if mdate:
-            n.setDate( mdate.group(1) )
+            n.setDate(mdate.group(1))
 
-
-    #read body
-    body = "" 
+    # read body
+    body = ""
     for line in f:
         body += line
 
-    #TODO catch error if there is no --- separator
-    n.setBody(body)  
+    # TODO catch error if there is no --- separator
+    n.setBody(body)
 
     f.close()
 
     return n
-
-
