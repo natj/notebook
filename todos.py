@@ -3,6 +3,7 @@ from os.path import isfile, join
 import regexes
 
 from notes import Note
+from notes import Inbox, TaskList
 from notes import readNoteFile
 from notebook import NoteBook
 import shell_util
@@ -19,6 +20,9 @@ def createTODO(directory):
     #create notebook
     nb = NoteBook()
     nb.setTitle("TODO")
+
+    #nb.inbox.print(msg)
+    #nb.tasklist.print(msg)
 
     for todof in todoFiles:
         n = readNoteFile(directory + "/" + todof)
@@ -50,6 +54,9 @@ def readTodoFile(fname):
     #filter header out
     c = 0
     while True:
+        if c >= len(tmp):
+            break
+
         line = tmp[c]
         #print("skipping {}".format(line))
 
@@ -100,8 +107,6 @@ def readTodoFile(fname):
             body += line + "\n"
         c += 1
     bodys.append(body) #append last hanging body
-
-    #strip from trailing newline
 
 
     #print("###########################################")
@@ -172,16 +177,6 @@ def compareNoteBooks(nb1, nb2):
                     modified.append(note)
                     break
 
-
-    #if note is not found nb1 with same name
-    #union = []
-    #for n in nb1.notes:
-    #    union.append(n)
-    #for n in modified:
-    #    union.append(n)
-
-
-
     # if note in nb1 is not found in nb2
     # then it has been removed
     for note in nb1.notes:
@@ -197,7 +192,6 @@ def compareNoteBooks(nb1, nb2):
             removed.append(note)
 
     return added, modified, removed
-
 
 
 
@@ -218,19 +212,22 @@ if __name__ == "__main__":
     #open for read
     fname = nb.tmpNoteFile
     shell_util.openFile(fname) #XXX
-    
+
     
     #create notebook from temporary file
     nbtmp = readTodoFile(fname)
     #nbtmp.print() #XXX debug print
     
     print("number of notes after:  {}".format(  len( nbtmp.notes )))
-    
+
+    #always save inbox and tasklist
+    nbtmp.inbox.save(directory)
+    nbtmp.tasklist.save(directory)
+
     #compare notebooks
     added, modified, removed = compareNoteBooks(nb, nbtmp)
-    
+
     # and now add accordingly
-    
     for note in added:
         note.save(directory)
     

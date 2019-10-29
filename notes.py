@@ -9,7 +9,6 @@ class Note:
     name  = ""
     title = ""
     body  = ""
-
     date  = ""
 
 
@@ -99,6 +98,68 @@ class Note:
         f = open(fname,'w')
         f.write(msg)
         f.close()
+
+
+    #print all content
+    def print(self, msg):
+        msg += "--------------------------------------------------------------\n"
+        msg += "## {}\n".format(self.title) 
+        #msg += "  created: {}\n".format(self.date)
+        #msg += " modified: {}\n".format(self.date)
+        msg += "---:{}\n".format(self.hash())
+
+        prewv = self.body.rstrip()
+        #if len(prewv) > self.previewLen:
+        #    prewv = prewv[:140]
+        #    prewv += "  . . ."
+
+        msg += "{}\n".format(prewv)
+        msg += "\n"
+
+        return msg
+
+
+
+class Inbox(Note):
+    title = "inbox"
+    name  = "inbox"
+
+    def __init__(self, note):
+        self.body = note.body
+        self.date = note.date
+
+    #print all content
+    def print(self, msg):
+        print("inbox: {} writing to msg".format(self.title))
+        msg += "--------------------------------------------------------------\n"
+        msg += "## {}\n".format(self.title) 
+        prewv = self.body.rstrip()
+        msg += "{}\n".format(prewv)
+
+        msg += "\n"
+
+        return msg
+
+
+class TaskList(Note):
+    title = "tasklist"
+    name  = "tasklist"
+
+    def __init__(self, note):
+        self.body = note.body
+        self.date = note.date
+
+    #print all content
+    def print(self, msg):
+        print("tasklist {} writing to msg".format(self.title))
+        msg += "--------------------------------------------------------------\n"
+        msg += "## {}\n".format(self.title) 
+        prewv = self.body.rstrip()
+        msg += "{}\n".format(prewv)
+
+        msg += "\n"
+
+        return msg
 
 
 

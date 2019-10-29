@@ -1,4 +1,5 @@
 from notes import Note
+from notes import Inbox, TaskList
 
 
 class NoteBook:
@@ -11,47 +12,57 @@ class NoteBook:
     #name of the main temporary note file
     tmpNoteFile = "notebook-tmp.md"
 
+    #-------------------------------------------------- 
+    #special notes always present
+
+    # name of the inbox
+    inbox = Inbox
+    tasklist = TaskList
+
+
     def __init__(self):
         self.notes = []
 
+        #add inbox
+        #inbox = Note()
+        #inbox.setTitle(self.inbox_name)
+        #self.inbox = inbox
+
+        ##add tasklist
+        #tasklist = Note()
+        #tasklist.setTitle(self.tasklist_name)
+        #self.tasklist = tasklist
 
     #add a new note
     def addNote(self, note):
-        self.notes.append(note)
+
+        if note.title == self.inbox.title:
+            self.inbox = Inbox(note)
+        elif note.title == self.tasklist.title:
+            self.tasklist = TaskList(note)
+        else:
+            self.notes.append(note)
 
     #set notebook title 
     def setTitle(self, title):
         self.title = title
+
 
     #print notebook
     def print(self):
 
         msg = ""
         msg += "# {}\n".format(self.title)
-        msg += "---------\n"
         msg += "\n"
+
+        msg = self.inbox.print(msg)
+        msg = self.tasklist.print(msg)
 
         #loop over all notes and collect text
         for note in self.notes:
-            msg += "--------------------------------------------------------------\n"
-            msg += "## {}\n".format(note.title) 
-            #msg += "  created: {}\n".format(note.date)
-            #msg += " modified: {}\n".format(note.date)
-            msg += "---:{}\n".format(note.hash())
-
-            prewv = note.body.rstrip()
-            #if len(prewv) > self.previewLen:
-            #    prewv = prewv[:140]
-            #    prewv += "  . . ."
-
-            msg += "{}\n".format(prewv)
-            msg += "\n"
-
-        #msg += "\n"
-
+            msg = note.print(msg)
 
         msg = msg.rstrip() #remove all trailing newlines
-        #print(msg)
 
         f = open(self.tmpNoteFile, 'w')
         f.write(msg)
@@ -59,6 +70,12 @@ class NoteBook:
 
 
 
+
+
+
+
+#--------------------------------------------------
+# Testing
 if __name__ == "__main__":
     note1 = Note()
     note1.setTitle("note number 1")
