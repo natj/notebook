@@ -16,11 +16,17 @@ class NoteBook:
     # special notes always present
 
     # name of the inbox
-    inbox = Inbox
-    tasklist = TaskList
+    #inbox = Inbox()
+    #tasklist = TaskList()
 
     def __init__(self):
         self.notes = []
+        
+        inbox = Note()
+        self.inbox = Inbox(inbox)
+
+        taskl = Note()
+        self.tasklist = TaskList(taskl)
 
         # add inbox
         # inbox = Note()
@@ -61,6 +67,9 @@ class NoteBook:
             msg = note.print(msg)
 
         msg = msg.rstrip()  # remove all trailing newlines
+
+        msg += "\n"
+        msg += "\n"
 
         f = open(self.tmpNoteFile, "w")
         f.write(msg)

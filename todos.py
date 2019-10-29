@@ -26,7 +26,11 @@ def createTODO(directory):
 
     for todof in todoFiles:
         n = readNoteFile(directory + "/" + todof)
+        #print("adding note {}".format(todof))
         nb.addNote(n)
+
+    # finally, create task list based on todo projects 
+    nb.tasklist.createTasks(nb.notes)
 
     return nb
 

@@ -47,6 +47,7 @@ class Note:
             tmp = self.title.replace(" ", "-").lower()
             tmp = tmp.replace("/", "").lower()
 
+
         # else lets use the name slot
         else:
             tmp = self.name
@@ -124,7 +125,6 @@ class Inbox(Note):
 
     # print all content
     def print(self, msg):
-        print("inbox: {} writing to msg".format(self.title))
         msg += "--------------------------------------------------------------\n"
         msg += "## {}\n".format(self.title)
         prewv = self.body.rstrip()
@@ -142,6 +142,53 @@ class TaskList(Note):
     def __init__(self, note):
         self.body = note.body
         self.date = note.date
+
+
+    def getTasks(self, msg):
+        tasks = []
+        for line in msg.splitlines():
+            if line == "":
+                continue
+            mtask = regexes.REtasks.match(line)
+
+            #print("line:", line)
+            if mtask:
+                t = mtask.group(1)
+                #print("    found task that has text:", mtask.group(1))
+
+                mcompl = regexes.REtask_compl.match(t)
+                if not(mcompl):
+                    tasks.append(t)
+
+        return tasks
+
+    # parse tasks from set of notes
+    def createTasks(self, notes):
+
+        msg = "\n"
+        for note in notes:
+            name = note.title
+            #print("**********")
+            #print("project name: {}".format(name))
+            tasks = self.getTasks(note.body)
+            #print("***tasks were:")
+            #print(tasks)
+             
+            msg += "+++ {}\n".format(name)
+
+            itasks = 1
+            for task in tasks:
+                msg += "- [ ] {}\n".format(task)
+
+                #print only 2 first ones
+                if itasks >= 2:
+                    break
+                itasks += 1
+
+            msg += "\n"
+
+        self.body = msg
+
 
     # print all content
     def print(self, msg):

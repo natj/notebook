@@ -18,3 +18,11 @@ REhash = re.compile(r"\s*---:(.*)")
 
 # beautifying note division line (for skipping)
 REdiv = re.compile(r"^[-]{62}")
+
+
+# detect any task list; see https://www.debuggex.com/#cheatsheet
+
+#almost working oneliner (python regex bug prevents this)
+#REtasks = re.compile(r"\s*-\s*(?:\[\s*\S*\s*\])??(?:\[\s*\])?\s*(.+)")
+REtasks = re.compile(r"\s*-\s*(?:\[\s*\])?\s*(.+)")
+REtask_compl = re.compile(r"\[\s*\S?\s*\]\s*(.*)")
