@@ -174,18 +174,30 @@ class TaskList(Note):
             #print("***tasks were:")
             #print(tasks)
              
-            msg += "+++ {}\n".format(name)
+            #msg += "+++ {}\n".format(name)
 
             itasks = 1
             for task in tasks:
-                msg += "- [ ] {}\n".format(task)
+
+                #simple print
+                #msg += "- [ ] {}\n".format(task)
+
+                #tabbed print
+                msg += "{:20.20}  | ".format(name)
+
+                msg += "-[] {:60.60}".format(task)
+                if len(task) > 70:
+                    msg += "...\n"
+                else:
+                    msg += "   \n"
+
 
                 #print only 2 first ones
-                if itasks >= 2:
+                if itasks >= 3:
                     break
                 itasks += 1
 
-            msg += "\n"
+            #msg += "\n"
 
         self.body = msg
 
